@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Aluno {
+  ra String      @id @db.VarChar(10)
+  nome String @db.VarChar(100)
+  telefone String @db.VarChar(11)
+  empresta  Empresta[]  
+}
+
+model Empresta {
+  id Int @id @default(autoincrement())
+  alunoRa String @db.VarChar(10)
+  livroId Int
+  retirada DateTime @db.Date @default(now())
+  devolucao DateTime? @db.Date @default(now())
+  muita Float @default(0.0)
+
+  aluno Aluno @relation(fields: [alunoRa], references: [ra])
+  livro Livro @relation(fields: [livroId], references: [id])
+}
+
+model Livro {
+  id Int @id @default(autoincrement())
+  titulo String @db.VarChar(100)
+  autor String @db.VarChar(100)
+  prateleira String @db.VarChar(100)
+  empresta Empresta[]
+}
